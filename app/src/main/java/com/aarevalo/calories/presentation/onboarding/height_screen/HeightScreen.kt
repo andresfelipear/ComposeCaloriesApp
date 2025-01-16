@@ -1,21 +1,15 @@
-package com.aarevalo.calories.presentation.onboarding.age_screen
+package com.aarevalo.calories.presentation.onboarding.height_screen
 
-import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -26,14 +20,11 @@ import com.aarevalo.calories.presentation.onboarding.components.UnitTextField
 import com.aarevalo.calories.ui.theme.CaloriesTheme
 import com.aarevalo.calories.ui.theme.LocalSpacing
 
-@SuppressLint("UnrememberedMutableState")
 @Composable
-fun AgeScreen(
+fun HeightScreen(
     onNextClick: () -> Unit,
 ) {
     val spacing = LocalSpacing.current
-
-    var age by mutableStateOf("20")
 
     Box(
         modifier = Modifier
@@ -43,21 +34,21 @@ fun AgeScreen(
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ){
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(
-                text = stringResource(R.string.whats_your_age),
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.titleSmall
+                text = stringResource(R.string.whats_your_height),
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurface
             )
 
             Spacer(modifier = Modifier.padding(spacing.spaceMedium))
 
             UnitTextField(
-                value = age,
+                value = "180",
                 onValueChange = {},
-                unit = stringResource(R.string.years)
+                unit = stringResource(R.string.cm)
             )
         }
 
@@ -71,8 +62,8 @@ fun AgeScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun AgeScreenPreview() {
+fun HeightScreenPreview() {
     CaloriesTheme {
-        AgeScreen(onNextClick = {})
+        HeightScreen(onNextClick = {})
     }
 }

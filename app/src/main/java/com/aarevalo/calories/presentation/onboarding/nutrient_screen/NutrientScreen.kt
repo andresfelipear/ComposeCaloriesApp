@@ -1,14 +1,12 @@
-package com.aarevalo.calories.presentation.onboarding.age_screen
+package com.aarevalo.calories.presentation.onboarding.nutrient_screen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,17 +21,18 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.aarevalo.calories.R
 import com.aarevalo.calories.presentation.onboarding.components.ActionButton
 import com.aarevalo.calories.presentation.onboarding.components.UnitTextField
-import com.aarevalo.calories.ui.theme.CaloriesTheme
 import com.aarevalo.calories.ui.theme.LocalSpacing
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun AgeScreen(
+fun NutrientScreen(
     onNextClick: () -> Unit,
 ) {
     val spacing = LocalSpacing.current
 
-    var age by mutableStateOf("20")
+    var carbs by mutableStateOf("40")
+    var proteins by mutableStateOf("30")
+    var fats by mutableStateOf("30")
 
     Box(
         modifier = Modifier
@@ -43,21 +42,35 @@ fun AgeScreen(
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
-        ){
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
             Text(
-                text = stringResource(R.string.whats_your_age),
-                color = MaterialTheme.colorScheme.onSurface,
-                style = MaterialTheme.typography.titleSmall
+                text = stringResource(R.string.what_are_your_nutrient_goals)
             )
 
             Spacer(modifier = Modifier.padding(spacing.spaceMedium))
 
             UnitTextField(
-                value = age,
+                value = carbs,
                 onValueChange = {},
-                unit = stringResource(R.string.years)
+                unit = stringResource(R.string.percent_carbs)
+            )
+
+            Spacer(modifier = Modifier.padding(spacing.spaceMedium))
+
+            UnitTextField(
+                value = proteins,
+                onValueChange = {},
+                unit = stringResource(R.string.percent_proteins)
+            )
+
+            Spacer(modifier = Modifier.padding(spacing.spaceMedium))
+
+            UnitTextField(
+                value = fats,
+                onValueChange = {},
+                unit = stringResource(R.string.percent_fats)
             )
         }
 
@@ -71,8 +84,6 @@ fun AgeScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun AgeScreenPreview() {
-    CaloriesTheme {
-        AgeScreen(onNextClick = {})
-    }
+fun NutrientScreenPreview() {
+    NutrientScreen(onNextClick = {})
 }
