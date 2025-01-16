@@ -8,7 +8,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.aarevalo.calories.ui.theme.CaloriesTheme
 import com.aarevalo.calories.ui.theme.LocalSpacing
 
 @Composable
@@ -31,5 +33,13 @@ fun ActionButton(
             color = MaterialTheme.colorScheme.onPrimary,
             modifier = Modifier.padding(LocalSpacing.current.spaceSmall)
         )
+    }
+}
+
+@Preview
+@Composable
+fun ActionButtonPreview() {
+    CaloriesTheme {
+        ActionButton(text = "Next", onClick = {})
     }
 }
