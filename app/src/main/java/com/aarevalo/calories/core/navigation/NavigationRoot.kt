@@ -19,7 +19,6 @@ import com.aarevalo.calories.app.onboarding.goal_screen.GoalScreenRoot
 import com.aarevalo.calories.app.onboarding.goal_screen.GoalViewModel
 import com.aarevalo.calories.app.onboarding.height_screen.HeightScreenRoot
 import com.aarevalo.calories.app.onboarding.height_screen.HeightViewModel
-import com.aarevalo.calories.app.onboarding.nutrient_screen.NutrientGoalScreen
 import com.aarevalo.calories.app.onboarding.nutrient_screen.NutrientGoalScreenRoot
 import com.aarevalo.calories.app.onboarding.nutrient_screen.NutrientGoalViewModel
 import com.aarevalo.calories.app.onboarding.tracker_overview.TrackerOverviewScreen
