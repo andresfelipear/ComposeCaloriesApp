@@ -10,16 +10,17 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.aarevalo.calories.app.onboarding.activity_level_screen.ActivityLevelScreen
-import com.aarevalo.calories.app.onboarding.age_screen.AgeScreen
 import com.aarevalo.calories.app.onboarding.age_screen.AgeScreenRoot
 import com.aarevalo.calories.app.onboarding.age_screen.AgeViewModel
 import com.aarevalo.calories.app.onboarding.gender_screen.GenderScreenRoot
 import com.aarevalo.calories.app.onboarding.gender_screen.GenderViewModel
 import com.aarevalo.calories.app.onboarding.goal_screen.GoalScreen
-import com.aarevalo.calories.app.onboarding.height_screen.HeightScreen
+import com.aarevalo.calories.app.onboarding.height_screen.HeightScreenRoot
+import com.aarevalo.calories.app.onboarding.height_screen.HeightViewModel
 import com.aarevalo.calories.app.onboarding.nutrient_screen.NutrientGoalScreen
 import com.aarevalo.calories.app.onboarding.tracker_overview.TrackerOverviewScreen
-import com.aarevalo.calories.app.onboarding.weight_screen.WeightScreen
+import com.aarevalo.calories.app.onboarding.weight_screen.WeightScreenRoot
+import com.aarevalo.calories.app.onboarding.weight_screen.WeightViewModel
 import com.aarevalo.calories.app.onboarding.welcome.WelcomeScreen
 
 @Composable
@@ -57,14 +58,20 @@ fun NavigationRoot(
                 )
             }
             composable<HeightScreenRoute>(){
-                HeightScreen {
-                    navHostController.navigate(WeightScreenRoute)
-                }
+                val viewModel = hiltViewModel<HeightViewModel>()
+                HeightScreenRoot(
+                    onNextClick = {navHostController.navigate(WeightScreenRoute)},
+                    viewModel = viewModel,
+                    snackbarHostState = snackbarHostState
+                )
             }
             composable<WeightScreenRoute>(){
-                WeightScreen {
-                    navHostController.navigate(ActivityLevelScreenRoute)
-                }
+                val viewModel = hiltViewModel<WeightViewModel>()
+                WeightScreenRoot(
+                    onNextClick = {navHostController.navigate(ActivityLevelScreenRoute)},
+                    viewModel = viewModel,
+                    snackbarHostState = snackbarHostState
+                )
             }
             composable<ActivityLevelScreenRoute>(){
                 ActivityLevelScreen {
