@@ -12,6 +12,8 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.compose.rememberNavController
+import com.aarevalo.calories.core.navigation.NavigationRoot
 import com.aarevalo.calories.presentation.onboarding.welcome.WelcomeScreen
 import com.aarevalo.calories.ui.theme.CaloriesTheme
 
@@ -21,17 +23,10 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             CaloriesTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Box(
-                        modifier = Modifier.padding(innerPadding)
-                    ){
-                        WelcomeScreen(
-                            onNextClick = {
-
-                            }
-                        )
-                    }
-                }
+                val navController = rememberNavController()
+                NavigationRoot(
+                    navHostController = navController
+                )
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.aarevalo.calories.presentation.onboarding.nutrient_screen
+package com.aarevalo.calories.presentation.onboarding.weight_screen
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.background
@@ -13,7 +13,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -25,52 +24,35 @@ import com.aarevalo.calories.ui.theme.LocalSpacing
 
 @SuppressLint("UnrememberedMutableState")
 @Composable
-fun NutrientScreen(
+fun WeightScreen(
     onNextClick: () -> Unit,
 ) {
-    val spacing = LocalSpacing.current
-
-    var carbs by mutableStateOf("40")
-    var proteins by mutableStateOf("30")
-    var fats by mutableStateOf("30")
+    val space = LocalSpacing.current
+    val weight by mutableStateOf("180")
 
     Box(
         modifier = Modifier
             .fillMaxSize()
+            .padding(space.spaceLarge)
             .background(MaterialTheme.colorScheme.background)
-            .padding(spacing.spaceLarge)
     ) {
         Column(
             modifier = Modifier.fillMaxSize(),
-            verticalArrangement = Arrangement.Center,
-            horizontalAlignment = Alignment.CenterHorizontally
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.Center
         ) {
             Text(
-                text = stringResource(R.string.what_are_your_nutrient_goals)
+                text = stringResource(R.string.whats_your_weight),
+                style = MaterialTheme.typography.titleSmall,
+                color = MaterialTheme.colorScheme.onSurface
             )
 
-            Spacer(modifier = Modifier.padding(spacing.spaceMedium))
+            Spacer(modifier = Modifier.padding(space.spaceMedium))
 
             UnitTextField(
-                value = carbs,
+                value = weight,
                 onValueChange = {},
-                unit = stringResource(R.string.percent_carbs)
-            )
-
-            Spacer(modifier = Modifier.padding(spacing.spaceMedium))
-
-            UnitTextField(
-                value = proteins,
-                onValueChange = {},
-                unit = stringResource(R.string.percent_proteins)
-            )
-
-            Spacer(modifier = Modifier.padding(spacing.spaceMedium))
-
-            UnitTextField(
-                value = fats,
-                onValueChange = {},
-                unit = stringResource(R.string.percent_fats)
+                unit = stringResource(R.string.kg)
             )
         }
 
@@ -84,6 +66,6 @@ fun NutrientScreen(
 
 @Preview(showBackground = true)
 @Composable
-fun NutrientScreenPreview() {
-    NutrientScreen(onNextClick = {})
+fun WeightScreenPreview() {
+    WeightScreen(onNextClick = {})
 }
