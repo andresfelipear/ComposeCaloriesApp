@@ -9,30 +9,67 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.aarevalo.calories.R
 import com.aarevalo.calories.app.onboarding.components.ActionButton
 import com.aarevalo.calories.app.onboarding.components.UnitTextField
 import com.aarevalo.calories.app.ui.theme.LocalSpacing
+import com.aarevalo.calories.core.domain.util.UiEvent
 
+@Composable
+fun NutrientGoalScreenRoot(
+    onNextClick: () -> Unit,
+    viewModel: NutrientGoalViewModel,
+    snackbarHostState: SnackbarHostState
+) {
+    val state by viewModel.state.collectAsState()
+    val context = LocalContext.current
+
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect { event ->
+            when(event) {
+                is UiEvent.Success -> onNextClick()
+                is UiEvent.ShowSnackbar -> {
+                    snackbarHostState.showSnackbar(
+                        message = event.message.asString(context)
+                    )
+                }
+                else -> Unit
+            }
+        }
+    }
+
+    NutrientGoalScreen(
+        onAction = {
+            when(it){
+                is NutrientGoalScreenAction.OnCarbRatioEnter -> viewModel.onAction(it)
+                is NutrientGoalScreenAction.OnProteinRatioEnter -> viewModel.onAction(it)
+                is NutrientGoalScreenAction.OnFatRatioEnter -> viewModel.onAction(it)
+                is NutrientGoalScreenAction.OnNextClick -> viewModel.onAction(it)
+            }
+        },
+        state = state
+    )
+}
 @SuppressLint("UnrememberedMutableState")
 @Composable
 fun NutrientGoalScreen(
-    onNextClick: () -> Unit,
+    onAction : (NutrientGoalScreenAction) -> Unit,
+    state : NutrientGoalScreenState
 ) {
     val spacing = LocalSpacing.current
-
-    var carbs by mutableStateOf("40")
-    var proteins by mutableStateOf("30")
-    var fats by mutableStateOf("30")
 
     Box(
         modifier = Modifier
@@ -52,31 +89,39 @@ fun NutrientGoalScreen(
             Spacer(modifier = Modifier.padding(spacing.spaceMedium))
 
             UnitTextField(
-                value = carbs,
-                onValueChange = {},
+                value = state.carbsRatio,
+                onValueChange = {
+                    onAction(NutrientGoalScreenAction.OnCarbRatioEnter(it))
+                },
                 unit = stringResource(R.string.percent_carbs)
             )
 
             Spacer(modifier = Modifier.padding(spacing.spaceMedium))
 
             UnitTextField(
-                value = proteins,
-                onValueChange = {},
+                value = state.proteinRatio,
+                onValueChange = {
+                    onAction(NutrientGoalScreenAction.OnProteinRatioEnter(it))
+                },
                 unit = stringResource(R.string.percent_proteins)
             )
 
             Spacer(modifier = Modifier.padding(spacing.spaceMedium))
 
             UnitTextField(
-                value = fats,
-                onValueChange = {},
+                value = state.fatRatio,
+                onValueChange = {
+                    onAction(NutrientGoalScreenAction.OnFatRatioEnter(it))
+                },
                 unit = stringResource(R.string.percent_fats)
             )
         }
 
         ActionButton(
             text = stringResource(R.string.next),
-            onClick = { onNextClick() },
+            onClick = {
+                onAction(NutrientGoalScreenAction.OnNextClick)
+            },
             modifier = Modifier.align(Alignment.BottomEnd)
         )
     }
@@ -85,5 +130,8 @@ fun NutrientGoalScreen(
 @Preview(showBackground = true)
 @Composable
 fun NutrientScreenPreview() {
-    NutrientGoalScreen(onNextClick = {})
+    NutrientGoalScreen(
+        onAction = {},
+        state = NutrientGoalScreenState()
+    )
 }

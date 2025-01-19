@@ -30,6 +30,7 @@ class WeightViewModel @Inject constructor() : ViewModel() {
         viewModelScope.launch {
             when(action) {
                 is WeightScreenAction.OnWeightEnter -> {
+                    println("Weight: " + action.weight)
                     if(action.weight.length <= 3) {
                         _state.update {
                             it.copy(weight = filterOutDigits(action.weight))

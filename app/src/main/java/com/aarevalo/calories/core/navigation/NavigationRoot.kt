@@ -9,15 +9,19 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.aarevalo.calories.app.onboarding.activity_level_screen.ActivityLevelScreen
+import com.aarevalo.calories.app.onboarding.activity_level_screen.ActivityLevelScreenRoot
+import com.aarevalo.calories.app.onboarding.activity_level_screen.ActivityLevelViewModel
 import com.aarevalo.calories.app.onboarding.age_screen.AgeScreenRoot
 import com.aarevalo.calories.app.onboarding.age_screen.AgeViewModel
 import com.aarevalo.calories.app.onboarding.gender_screen.GenderScreenRoot
 import com.aarevalo.calories.app.onboarding.gender_screen.GenderViewModel
-import com.aarevalo.calories.app.onboarding.goal_screen.GoalScreen
+import com.aarevalo.calories.app.onboarding.goal_screen.GoalScreenRoot
+import com.aarevalo.calories.app.onboarding.goal_screen.GoalViewModel
 import com.aarevalo.calories.app.onboarding.height_screen.HeightScreenRoot
 import com.aarevalo.calories.app.onboarding.height_screen.HeightViewModel
 import com.aarevalo.calories.app.onboarding.nutrient_screen.NutrientGoalScreen
+import com.aarevalo.calories.app.onboarding.nutrient_screen.NutrientGoalScreenRoot
+import com.aarevalo.calories.app.onboarding.nutrient_screen.NutrientGoalViewModel
 import com.aarevalo.calories.app.onboarding.tracker_overview.TrackerOverviewScreen
 import com.aarevalo.calories.app.onboarding.weight_screen.WeightScreenRoot
 import com.aarevalo.calories.app.onboarding.weight_screen.WeightViewModel
@@ -74,19 +78,26 @@ fun NavigationRoot(
                 )
             }
             composable<ActivityLevelScreenRoute>(){
-                ActivityLevelScreen {
-                    navHostController.navigate(GoalScreenRoute)
-                }
+                val viewModel = hiltViewModel<ActivityLevelViewModel>()
+                ActivityLevelScreenRoot(
+                    onNextClick = {navHostController.navigate(GoalScreenRoute)},
+                    viewModel = viewModel
+                )
             }
             composable<GoalScreenRoute>(){
-                GoalScreen {
-                    navHostController.navigate(NutrientGoalScreenRoute)
-                }
+                val viewModel = hiltViewModel<GoalViewModel>()
+                GoalScreenRoot(
+                    onNextClick = {navHostController.navigate(NutrientGoalScreenRoute)},
+                    viewModel = viewModel
+                )
             }
             composable<NutrientGoalScreenRoute>(){
-                NutrientGoalScreen {
-                    navHostController.navigate(TrackerOverviewScreenRoute)
-                }
+                val viewModel = hiltViewModel<NutrientGoalViewModel>()
+                NutrientGoalScreenRoot(
+                    onNextClick = {navHostController.navigate(TrackerOverviewScreenRoute)},
+                    viewModel = viewModel,
+                    snackbarHostState = snackbarHostState
+                )
             }
             composable<TrackerOverviewScreenRoute>(){
                 TrackerOverviewScreen()

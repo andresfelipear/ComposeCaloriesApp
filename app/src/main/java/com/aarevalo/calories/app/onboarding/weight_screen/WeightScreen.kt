@@ -69,7 +69,6 @@ fun WeightScreen(
     state : WeightScreenState
 ) {
     val space = LocalSpacing.current
-    val weight by mutableStateOf("180")
 
     Box(
         modifier = Modifier

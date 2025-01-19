@@ -11,6 +11,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,10 +24,40 @@ import com.aarevalo.calories.R
 import com.aarevalo.calories.app.onboarding.components.ActionButton
 import com.aarevalo.calories.app.onboarding.components.SelectableButton
 import com.aarevalo.calories.app.ui.theme.LocalSpacing
+import com.aarevalo.calories.core.domain.model.GoalType
+import com.aarevalo.calories.core.domain.util.UiEvent
+
+@Composable
+fun GoalScreenRoot(
+    onNextClick: () -> Unit,
+    viewModel: GoalViewModel,
+) {
+    val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect { event ->
+            when(event) {
+                is UiEvent.Success -> onNextClick()
+                else -> Unit
+            }
+        }
+    }
+
+    GoalScreen(
+        onAction = { action ->
+            when(action) {
+                is GoalScreenAction.OnGoalSelect -> viewModel.onAction(action)
+                is GoalScreenAction.OnNextClick -> viewModel.onAction(action)
+            }
+            },
+        state = state
+    )
+}
 
 @Composable
 fun GoalScreen(
-    onNextClick: () -> Unit,
+    onAction : (GoalScreenAction) -> Unit,
+    state : GoalScreenState
 ) {
     val spacing = LocalSpacing.current
 
@@ -50,10 +83,12 @@ fun GoalScreen(
             Row {
                 SelectableButton(
                     text = stringResource(R.string.lose),
-                    isSelected = false,
+                    isSelected = state.selectedGoal is GoalType.LoseWeight,
                     color = MaterialTheme.colorScheme.primary,
                     selectedTextColor = Color.White,
-                    onClick = {},
+                    onClick = {
+                        onAction(GoalScreenAction.OnGoalSelect(GoalType.LoseWeight))
+                    },
                     textStyle = MaterialTheme.typography.titleSmall.copy(
                         fontWeight = FontWeight.Normal
                     )
@@ -63,10 +98,12 @@ fun GoalScreen(
 
                 SelectableButton(
                     text = stringResource(R.string.keep),
-                    isSelected = true,
+                    isSelected = state.selectedGoal is GoalType.KeepWeight,
                     color = MaterialTheme.colorScheme.primary,
                     selectedTextColor = Color.White,
-                    onClick = {},
+                    onClick = {
+                        onAction(GoalScreenAction.OnGoalSelect(GoalType.KeepWeight))
+                    },
                     textStyle = MaterialTheme.typography.titleSmall.copy(
                         fontWeight = FontWeight.Normal
                     )
@@ -76,10 +113,12 @@ fun GoalScreen(
 
                 SelectableButton(
                     text = stringResource(R.string.gain),
-                    isSelected = false,
+                    isSelected = state.selectedGoal is GoalType.GainWeight,
                     color = MaterialTheme.colorScheme.primary,
                     selectedTextColor = Color.White,
-                    onClick = {},
+                    onClick = {
+                        onAction(GoalScreenAction.OnGoalSelect(GoalType.GainWeight))
+                    },
                     textStyle = MaterialTheme.typography.titleSmall.copy(
                         fontWeight = FontWeight.Normal
                     )
@@ -89,7 +128,9 @@ fun GoalScreen(
 
         ActionButton(
             text = stringResource(R.string.next),
-            onClick = { onNextClick() },
+            onClick = {
+                onAction(GoalScreenAction.OnNextClick)
+            },
             modifier = Modifier.align(Alignment.BottomEnd)
         )
     }
@@ -98,5 +139,8 @@ fun GoalScreen(
 @Preview(showBackground = true)
 @Composable
 fun GoalScreenPreview() {
-    GoalScreen(onNextClick = {})
+    GoalScreen(
+        onAction = {},
+        state = GoalScreenState()
+    )
 }

@@ -1,0 +1,37 @@
+package com.aarevalo.calories.app.onboarding.goal_screen
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.aarevalo.calories.core.domain.util.UiEvent
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+
+@HiltViewModel
+class GoalViewModel @Inject constructor() : ViewModel() {
+    private val _state = MutableStateFlow(GoalScreenState())
+    val state = _state.asStateFlow()
+
+    private val _uiEvent = Channel<UiEvent>()
+    val uiEvent = _uiEvent.receiveAsFlow()
+
+    fun onAction(action: GoalScreenAction) {
+        viewModelScope.launch {
+            when(action) {
+                is GoalScreenAction.OnGoalSelect -> {
+                    _state.update {
+                        it.copy(selectedGoal = action.goal)
+                    }
+                }
+                is GoalScreenAction.OnNextClick -> {
+                    _uiEvent.send(UiEvent.Success)
+                }
+            }
+        }
+    }
+}

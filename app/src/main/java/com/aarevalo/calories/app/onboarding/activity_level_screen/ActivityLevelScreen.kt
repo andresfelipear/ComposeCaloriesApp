@@ -9,11 +9,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
@@ -21,10 +26,40 @@ import com.aarevalo.calories.R
 import com.aarevalo.calories.app.onboarding.components.ActionButton
 import com.aarevalo.calories.app.onboarding.components.SelectableButton
 import com.aarevalo.calories.app.ui.theme.LocalSpacing
+import com.aarevalo.calories.core.domain.model.ActivityLevel
+import com.aarevalo.calories.core.domain.util.UiEvent
+
+@Composable
+fun ActivityLevelScreenRoot(
+    onNextClick: () -> Unit,
+    viewModel: ActivityLevelViewModel,
+) {
+    val state by viewModel.state.collectAsState()
+
+    LaunchedEffect(key1 = true) {
+        viewModel.uiEvent.collect { event ->
+            when(event) {
+                is UiEvent.Success -> onNextClick()
+                else -> Unit
+            }
+        }
+    }
+
+    ActivityLevelScreen(
+        onAction = { action ->
+            when(action) {
+                is ActivityLevelScreenAction.OnActivityLevelSelect -> viewModel.onAction(action)
+                is ActivityLevelScreenAction.OnNextClick -> viewModel.onAction(action)
+            }
+        },
+        state = state
+    )
+}
 
 @Composable
 fun ActivityLevelScreen(
-    onNextClick: () -> Unit,
+    onAction : (ActivityLevelScreenAction) -> Unit,
+    state : ActivityLevelScreenState,
 ) {
     val spacing = LocalSpacing.current
 
@@ -50,10 +85,12 @@ fun ActivityLevelScreen(
             Row {
                 SelectableButton(
                     text = stringResource(R.string.low),
-                    isSelected = false,
+                    isSelected = state.selectedActivityLevel is ActivityLevel.Low,
                     color = MaterialTheme.colorScheme.primary,
                     selectedTextColor = Color.White,
-                    onClick = {},
+                    onClick = {
+                        onAction(ActivityLevelScreenAction.OnActivityLevelSelect(ActivityLevel.Low))
+                    },
                     textStyle = MaterialTheme.typography.titleSmall.copy(
                         fontWeight = FontWeight.Normal
                     )
@@ -63,10 +100,12 @@ fun ActivityLevelScreen(
 
                 SelectableButton(
                     text = stringResource(R.string.medium),
-                    isSelected = true,
+                    isSelected = state.selectedActivityLevel is ActivityLevel.Medium,
                     color = MaterialTheme.colorScheme.primary,
                     selectedTextColor = Color.White,
-                    onClick = {},
+                    onClick = {
+                        onAction(ActivityLevelScreenAction.OnActivityLevelSelect(ActivityLevel.Medium))
+                    },
                     textStyle = MaterialTheme.typography.titleSmall.copy(
                         fontWeight = FontWeight.Normal
                     )
@@ -76,10 +115,12 @@ fun ActivityLevelScreen(
 
                 SelectableButton(
                     text = stringResource(R.string.high),
-                    isSelected = false,
+                    isSelected = state.selectedActivityLevel is ActivityLevel.High,
                     color = MaterialTheme.colorScheme.primary,
                     selectedTextColor = Color.White,
-                    onClick = {},
+                    onClick = {
+                        onAction(ActivityLevelScreenAction.OnActivityLevelSelect(ActivityLevel.High))
+                    },
                     textStyle = MaterialTheme.typography.titleSmall.copy(
                         fontWeight = FontWeight.Normal
                     )
@@ -92,7 +133,9 @@ fun ActivityLevelScreen(
 
         ActionButton(
             text = stringResource(R.string.next),
-            onClick = { onNextClick() },
+            onClick = {
+                onAction(ActivityLevelScreenAction.OnNextClick)
+            },
             modifier = Modifier.align(Alignment.BottomEnd)
         )
     }
@@ -101,5 +144,8 @@ fun ActivityLevelScreen(
 @Preview(showBackground = true)
 @Composable
 fun ActivityLevelScreenPreview() {
-    ActivityLevelScreen(onNextClick = {})
+    ActivityLevelScreen(
+        onAction = {},
+        state = ActivityLevelScreenState()
+    )
 }
