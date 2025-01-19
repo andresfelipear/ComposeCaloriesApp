@@ -2,7 +2,6 @@ package com.aarevalo.calories.app.onboarding.gender_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aarevalo.calories.core.domain.model.Gender
 import com.aarevalo.calories.core.domain.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel

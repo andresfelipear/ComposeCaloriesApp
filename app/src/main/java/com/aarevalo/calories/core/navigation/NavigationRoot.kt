@@ -2,6 +2,7 @@ package com.aarevalo.calories.core.navigation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -10,6 +11,8 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.aarevalo.calories.app.onboarding.activity_level_screen.ActivityLevelScreen
 import com.aarevalo.calories.app.onboarding.age_screen.AgeScreen
+import com.aarevalo.calories.app.onboarding.age_screen.AgeScreenRoot
+import com.aarevalo.calories.app.onboarding.age_screen.AgeViewModel
 import com.aarevalo.calories.app.onboarding.gender_screen.GenderScreenRoot
 import com.aarevalo.calories.app.onboarding.gender_screen.GenderViewModel
 import com.aarevalo.calories.app.onboarding.goal_screen.GoalScreen
@@ -22,6 +25,7 @@ import com.aarevalo.calories.app.onboarding.welcome.WelcomeScreen
 @Composable
 fun NavigationRoot(
     navHostController: NavHostController,
+    snackbarHostState: SnackbarHostState
 ){
     Box(
         modifier = Modifier.fillMaxSize()
@@ -45,9 +49,12 @@ fun NavigationRoot(
                 )
             }
             composable<AgeScreenRoute>(){
-                AgeScreen {
-                    navHostController.navigate(HeightScreenRoute)
-                }
+                val viewModel = hiltViewModel<AgeViewModel>()
+                AgeScreenRoot(
+                    onNextClick = {navHostController.navigate(HeightScreenRoute)},
+                    viewModel = viewModel,
+                    snackbarHostState = snackbarHostState
+                )
             }
             composable<HeightScreenRoute>(){
                 HeightScreen {
