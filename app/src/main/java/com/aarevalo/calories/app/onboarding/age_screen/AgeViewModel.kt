@@ -3,6 +3,7 @@ package com.aarevalo.calories.app.onboarding.age_screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aarevalo.calories.R
+import com.aarevalo.calories.core.domain.preferences.Preferences
 import com.aarevalo.calories.core.domain.use_case.FilterOutDigits
 import com.aarevalo.calories.core.domain.util.UiEvent
 import com.aarevalo.calories.core.domain.util.UiText
@@ -16,9 +17,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class AgeViewModel @Inject constructor(): ViewModel() {
-
-    private val filterOutDigits = FilterOutDigits()
+class AgeViewModel @Inject constructor(
+    private val filterOutDigits: FilterOutDigits,
+    private val preferences: Preferences
+): ViewModel() {
 
     private val _state = MutableStateFlow(AgeScreenState())
     val state = _state.asStateFlow()
@@ -39,7 +41,7 @@ class AgeViewModel @Inject constructor(): ViewModel() {
                     }
                 }
                 is AgeScreenAction.OnNextClick -> {
-                    state.value.age.toIntOrNull() ?: kotlin.run {
+                    val ageNumber = state.value.age.toIntOrNull() ?: kotlin.run {
                         _uiEvent.send(
                             UiEvent.ShowSnackbar(
                                 UiText.StringResource(R.string.error_age_cant_be_empty)
@@ -47,6 +49,7 @@ class AgeViewModel @Inject constructor(): ViewModel() {
                         )
                         return@launch
                     }
+                    preferences.saveAge(ageNumber)
                     _uiEvent.send(UiEvent.Success)
                 }
             }

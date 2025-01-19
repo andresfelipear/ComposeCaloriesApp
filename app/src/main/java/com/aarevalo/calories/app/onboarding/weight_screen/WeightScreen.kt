@@ -15,12 +15,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.aarevalo.calories.R
 import com.aarevalo.calories.app.onboarding.components.ActionButton
 import com.aarevalo.calories.app.onboarding.components.UnitTextField
@@ -30,7 +30,7 @@ import com.aarevalo.calories.core.domain.util.UiEvent
 @Composable
 fun WeightScreenRoot(
     onNextClick: () -> Unit,
-    viewModel: WeightViewModel,
+    viewModel: WeightViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState
 ) {
 

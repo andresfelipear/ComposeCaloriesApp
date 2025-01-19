@@ -19,6 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.aarevalo.calories.R
 import com.aarevalo.calories.app.onboarding.components.ActionButton
 import com.aarevalo.calories.app.onboarding.components.UnitTextField
@@ -29,7 +30,7 @@ import com.aarevalo.calories.core.domain.util.UiEvent
 @Composable
 fun HeightScreenRoot(
     onNextClick: () -> Unit,
-    viewModel: HeightViewModel,
+    viewModel: HeightViewModel = hiltViewModel(),
     snackbarHostState: SnackbarHostState
 ) {
 

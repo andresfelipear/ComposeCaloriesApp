@@ -3,6 +3,7 @@ package com.aarevalo.calories.app.onboarding.weight_screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aarevalo.calories.R
+import com.aarevalo.calories.core.domain.preferences.Preferences
 import com.aarevalo.calories.core.domain.use_case.FilterOutDigits
 import com.aarevalo.calories.core.domain.util.UiEvent
 import com.aarevalo.calories.core.domain.util.UiText
@@ -16,9 +17,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WeightViewModel @Inject constructor() : ViewModel() {
-
-    private val filterOutDigits = FilterOutDigits()
+class WeightViewModel @Inject constructor(
+    private val filterOutDigits: FilterOutDigits,
+    private val preferences: Preferences
+) : ViewModel() {
 
     private val _state = MutableStateFlow(WeightScreenState())
     val state = _state.asStateFlow()
@@ -38,7 +40,7 @@ class WeightViewModel @Inject constructor() : ViewModel() {
                     }
                 }
                 is WeightScreenAction.OnNextClick -> {
-                    state.value.weight.toIntOrNull() ?: kotlin.run {
+                    val weightNumber = state.value.weight.toFloatOrNull() ?: kotlin.run {
                         _uiEvent.send(
                             UiEvent.ShowSnackbar(
                                 UiText.StringResource(R.string.error_weight_cant_be_empty)
@@ -46,6 +48,7 @@ class WeightViewModel @Inject constructor() : ViewModel() {
                         )
                         return@launch
                     }
+                    preferences.saveWeight(weightNumber)
                     _uiEvent.send(UiEvent.Success)
                 }
             }

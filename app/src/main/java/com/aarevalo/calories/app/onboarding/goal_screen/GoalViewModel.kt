@@ -2,6 +2,7 @@ package com.aarevalo.calories.app.onboarding.goal_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aarevalo.calories.core.domain.preferences.Preferences
 import com.aarevalo.calories.core.domain.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -13,7 +14,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class GoalViewModel @Inject constructor() : ViewModel() {
+class GoalViewModel @Inject constructor(
+    private val preferences: Preferences
+) : ViewModel() {
     private val _state = MutableStateFlow(GoalScreenState())
     val state = _state.asStateFlow()
 
@@ -29,6 +32,7 @@ class GoalViewModel @Inject constructor() : ViewModel() {
                     }
                 }
                 is GoalScreenAction.OnNextClick -> {
+                    preferences.saveGoalType(state.value.selectedGoal)
                     _uiEvent.send(UiEvent.Success)
                 }
             }

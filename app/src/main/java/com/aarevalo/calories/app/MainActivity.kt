@@ -14,13 +14,22 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.rememberNavController
 import com.aarevalo.calories.core.navigation.NavigationRoot
 import com.aarevalo.calories.app.ui.theme.CaloriesTheme
+import com.aarevalo.calories.core.domain.preferences.Preferences
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
+    @Inject
+    lateinit var preferences: Preferences
+
     @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val shouldShowOnboarding = preferences.loadShouldShowOnboarding()
+
         enableEdgeToEdge()
         setContent {
             CaloriesTheme {
@@ -32,7 +41,8 @@ class MainActivity : ComponentActivity() {
                 ) {
                     NavigationRoot(
                         navHostController = navController,
-                        snackbarHostState = snackbarHostState
+                        snackbarHostState = snackbarHostState,
+                        shouldShowOnboarding = shouldShowOnboarding
                     )
                 }
 

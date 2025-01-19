@@ -2,6 +2,7 @@ package com.aarevalo.calories.app.onboarding.gender_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.aarevalo.calories.core.domain.preferences.Preferences
 import com.aarevalo.calories.core.domain.util.UiEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
@@ -13,7 +14,9 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class GenderViewModel @Inject constructor() : ViewModel() {
+class GenderViewModel @Inject constructor(
+    private val preferences: Preferences
+) : ViewModel() {
 
     private val _state = MutableStateFlow(GenderScreenState())
     val state = _state.asStateFlow()
@@ -32,6 +35,7 @@ class GenderViewModel @Inject constructor() : ViewModel() {
                     }
                 }
                 is GenderScreenAction.OnNextClick -> {
+                    preferences.saveGender(state.value.selectedGender)
                     _uiEvent.send(UiEvent.Success)
                 }
             }

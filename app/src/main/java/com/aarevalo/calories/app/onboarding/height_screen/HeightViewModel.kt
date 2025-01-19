@@ -3,6 +3,7 @@ package com.aarevalo.calories.app.onboarding.height_screen
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aarevalo.calories.R
+import com.aarevalo.calories.core.domain.preferences.Preferences
 import com.aarevalo.calories.core.domain.use_case.FilterOutDigits
 import com.aarevalo.calories.core.domain.util.UiEvent
 import com.aarevalo.calories.core.domain.util.UiText
@@ -16,9 +17,10 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class HeightViewModel @Inject constructor() : ViewModel() {
-
-    private val filterOutDigits = FilterOutDigits()
+class HeightViewModel @Inject constructor(
+    private val preferences: Preferences,
+    private val filterOutDigits: FilterOutDigits
+) : ViewModel() {
 
     private val _state = MutableStateFlow(HeightScreenState())
     val state = _state.asStateFlow()
@@ -37,7 +39,7 @@ class HeightViewModel @Inject constructor() : ViewModel() {
                     }
                 }
                 is HeightScreenAction.OnNextClick -> {
-                    state.value.height.toIntOrNull() ?: kotlin.run {
+                    val heightNumber = state.value.height.toIntOrNull() ?: kotlin.run {
                         _uiEvent.send(
                             UiEvent.ShowSnackbar(
                                 UiText.StringResource(R.string.error_height_cant_be_empty)
@@ -45,6 +47,7 @@ class HeightViewModel @Inject constructor() : ViewModel() {
                         )
                         return@launch
                     }
+                    preferences.saveHeight(heightNumber)
                     _uiEvent.send(UiEvent.Success)
                 }
             }

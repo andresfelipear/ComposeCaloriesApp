@@ -12,7 +12,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.aarevalo.calories.app.ui.theme.LocalSpacing
+
+@Composable
+fun TrackerOverviewScreenRoot(
+    viewModel: TrackerOverviewViewModel = hiltViewModel()
+) {
+    TrackerOverviewScreen()
+}
 
 @Composable
 fun TrackerOverviewScreen() {

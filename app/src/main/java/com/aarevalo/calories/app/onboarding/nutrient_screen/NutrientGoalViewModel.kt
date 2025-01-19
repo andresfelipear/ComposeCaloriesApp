@@ -2,10 +2,10 @@ package com.aarevalo.calories.app.onboarding.nutrient_screen
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.aarevalo.calories.R
+import com.aarevalo.calories.app.domain.use_case.ValidateNutrients
+import com.aarevalo.calories.core.domain.preferences.Preferences
 import com.aarevalo.calories.core.domain.use_case.FilterOutDigits
 import com.aarevalo.calories.core.domain.util.UiEvent
-import com.aarevalo.calories.core.domain.util.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -16,8 +16,11 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NutrientGoalViewModel @Inject constructor() : ViewModel(){
-    private val filterOutDigits = FilterOutDigits()
+class NutrientGoalViewModel @Inject constructor(
+    private val preferences: Preferences,
+    private val filterOutDigits: FilterOutDigits,
+    private val validateNutrients: ValidateNutrients
+) : ViewModel(){
 
     private val _state = MutableStateFlow(NutrientGoalScreenState())
     val state = _state.asStateFlow()
@@ -51,21 +54,23 @@ class NutrientGoalViewModel @Inject constructor() : ViewModel(){
                     }
                 }
                 is NutrientGoalScreenAction.OnNextClick -> {
-                    val carbsRatio = state.value.carbsRatio.toIntOrNull()
-                    val proteinRatio = state.value.proteinRatio.toIntOrNull()
-                    val fatRatio = state.value.fatRatio.toIntOrNull()
+                    val result = validateNutrients(
+                        carbsRatioText = state.value.carbsRatio,
+                        proteinRatioText = state.value.proteinRatio,
+                        fatRatioText = state.value.fatRatio
+                    )
 
-                    println("carbsRatio: $carbsRatio, proteinRatio: $proteinRatio, fatRatio: $fatRatio")
-
-                    if(carbsRatio == null || proteinRatio == null || fatRatio == null) {
-                        _uiEvent.send(
-                            UiEvent.ShowSnackbar(
-                                UiText.StringResource(R.string.error_invalid_values)
-                            )
-                        )
-                        return@launch
+                    when(result) {
+                        is ValidateNutrients.Result.Success -> {
+                            preferences.saveCarbRatio(result.carbsRatio)
+                            preferences.saveProteinRatio(result.proteinRatio)
+                            preferences.saveFatRatio(result.fatRatio)
+                            _uiEvent.send(UiEvent.Success)
+                        }
+                        is ValidateNutrients.Result.Error -> {
+                            _uiEvent.send(UiEvent.ShowSnackbar(result.message))
+                        }
                     }
-                    _uiEvent.send(UiEvent.Success)
                 }
             }
         }

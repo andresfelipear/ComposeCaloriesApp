@@ -20,6 +20,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.aarevalo.calories.R
 import com.aarevalo.calories.app.onboarding.components.ActionButton
 import com.aarevalo.calories.app.onboarding.components.SelectableButton
@@ -30,7 +31,7 @@ import com.aarevalo.calories.core.domain.util.UiEvent
 @Composable
 fun GoalScreenRoot(
     onNextClick: () -> Unit,
-    viewModel: GoalViewModel,
+    viewModel: GoalViewModel = hiltViewModel(),
 ) {
     val state by viewModel.state.collectAsState()
 
