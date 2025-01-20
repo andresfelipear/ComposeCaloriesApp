@@ -8,15 +8,16 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.aarevalo.calories.app.onboarding.activity_level_screen.ActivityLevelScreenRoot
-import com.aarevalo.calories.app.onboarding.age_screen.AgeScreenRoot
-import com.aarevalo.calories.app.onboarding.gender_screen.GenderScreenRoot
-import com.aarevalo.calories.app.onboarding.goal_screen.GoalScreenRoot
-import com.aarevalo.calories.app.onboarding.height_screen.HeightScreenRoot
-import com.aarevalo.calories.app.onboarding.nutrient_screen.NutrientGoalScreenRoot
-import com.aarevalo.calories.app.onboarding.tracker_overview.TrackerOverviewScreenRoot
-import com.aarevalo.calories.app.onboarding.weight_screen.WeightScreenRoot
-import com.aarevalo.calories.app.onboarding.welcome.WelcomeScreen
+import com.aarevalo.calories.app.presentation.onboarding.activity_level_screen.ActivityLevelScreenRoot
+import com.aarevalo.calories.app.presentation.onboarding.age_screen.AgeScreenRoot
+import com.aarevalo.calories.app.presentation.onboarding.gender_screen.GenderScreenRoot
+import com.aarevalo.calories.app.presentation.onboarding.goal_screen.GoalScreenRoot
+import com.aarevalo.calories.app.presentation.onboarding.height_screen.HeightScreenRoot
+import com.aarevalo.calories.app.presentation.onboarding.nutrient_screen.NutrientGoalScreenRoot
+import com.aarevalo.calories.app.presentation.tracker_overview.TrackerOverviewScreenRoot
+import com.aarevalo.calories.app.presentation.onboarding.weight_screen.WeightScreenRoot
+import com.aarevalo.calories.app.presentation.onboarding.welcome.WelcomeScreen
+
 
 @Composable
 fun NavigationRoot(
