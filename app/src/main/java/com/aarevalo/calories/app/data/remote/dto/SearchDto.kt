@@ -1,4 +1,4 @@
-package com.aarevalo.calories.data.remote.dto
+package com.aarevalo.calories.app.data.remote.dto
 
 import com.squareup.moshi.JsonClass
 

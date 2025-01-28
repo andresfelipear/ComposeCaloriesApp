@@ -1,6 +1,6 @@
-package com.aarevalo.calories.data.remote.api
+package com.aarevalo.calories.app.data.remote.api
 
-import com.aarevalo.calories.data.remote.dto.SearchDto
+import com.aarevalo.calories.app.data.remote.dto.SearchDto
 import retrofit2.http.GET
 import retrofit2.http.Query
 
@@ -11,7 +11,7 @@ interface OpenFoodApi {
         @Query("search_terms") query: String,
         @Query("page") page: Int,
         @Query("page_size") pageSize: Int
-    ):SearchDto
+    ): SearchDto
 
     companion object {
         const val BASE_URL = "https://us.openfoodfacts.org/"
