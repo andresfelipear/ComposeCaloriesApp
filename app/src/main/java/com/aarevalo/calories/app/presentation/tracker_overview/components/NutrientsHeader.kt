@@ -99,10 +99,19 @@ fun NutrientsHeader(
             }
         }
 
+        Spacer(modifier = Modifier.height(spacing.spaceSmall))
+        NutrientsBar(
+            carbs = 100,
+            proteins = 200,
+            fats = 100,
+            calories = 2000,
+            calorieGoal = 3500,
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(30.dp)
+        )
+
     }
-
-
-
 }
 
 @Preview(showBackground = true)
