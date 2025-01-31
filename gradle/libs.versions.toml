@@ -21,6 +21,7 @@ kotlinx-serialization = "1.7.3"
 uiTextGoogleFonts = "1.7.5"
 composeBom = "2024.11.00"
 uiTextGoogleFontsVersion = "1.7.6"
+uiTestAndroid = "1.7.7"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -79,6 +80,7 @@ room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 #Serialization
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization"}
 ui-text-google-fonts = { group = "androidx.compose.ui", name = "ui-text-google-fonts", version.ref = "uiTextGoogleFontsVersion" }
+androidx-ui-test-android = { group = "androidx.compose.ui", name = "ui-test-android", version.ref = "uiTestAndroid" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -17,6 +17,7 @@ import com.aarevalo.calories.app.presentation.onboarding.nutrient_screen.Nutrien
 import com.aarevalo.calories.app.presentation.tracker_overview.TrackerOverviewScreenRoot
 import com.aarevalo.calories.app.presentation.onboarding.weight_screen.WeightScreenRoot
 import com.aarevalo.calories.app.presentation.onboarding.welcome.WelcomeScreen
+import com.aarevalo.calories.app.presentation.search.SearchScreenRoot
 
 
 @Composable
@@ -80,7 +81,17 @@ fun NavigationRoot(
                 )
             }
             composable<TrackerOverviewScreenRoute>(){
-                TrackerOverviewScreenRoot()
+                TrackerOverviewScreenRoot(
+                    onNavigateToSearch = {
+                        navHostController.navigate(SearchScreenRoute)
+                    }
+                )
+            }
+            composable<SearchScreenRoute>() {
+                SearchScreenRoot(
+                    onNavigateUp = { navHostController.navigateUp() },
+                    snackBarHostState = snackbarHostState
+                )
             }
         }
     }

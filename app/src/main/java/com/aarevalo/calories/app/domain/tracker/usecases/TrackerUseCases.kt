@@ -1,5 +1,5 @@
 package com.aarevalo.calories.app.domain.tracker.usecases
 
-data class TrackerUseCase(
+data class TrackerUseCases(
      val searchFoodUseCase: SearchFoodUseCase
 )

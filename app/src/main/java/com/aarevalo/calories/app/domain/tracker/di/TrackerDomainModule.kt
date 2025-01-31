@@ -2,7 +2,7 @@ package com.aarevalo.calories.app.domain.tracker.di
 
 import com.aarevalo.calories.app.domain.tracker.repository.TrackerRepository
 import com.aarevalo.calories.app.domain.tracker.usecases.SearchFoodUseCase
-import com.aarevalo.calories.app.domain.tracker.usecases.TrackerUseCase
+import com.aarevalo.calories.app.domain.tracker.usecases.TrackerUseCases
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,8 +17,8 @@ object TrackerDomainModule {
     @Provides
     fun provideTrackerUseCase(
         trackerRepository: TrackerRepository
-    ) : TrackerUseCase {
-        return TrackerUseCase(
+    ) : TrackerUseCases {
+        return TrackerUseCases(
             searchFoodUseCase = SearchFoodUseCase(trackerRepository)
         )
     }

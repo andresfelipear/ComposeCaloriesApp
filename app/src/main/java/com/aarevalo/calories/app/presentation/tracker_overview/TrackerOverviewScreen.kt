@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -18,17 +19,38 @@ import com.aarevalo.calories.app.presentation.tracker_overview.components.Nutrie
 import com.aarevalo.calories.app.presentation.tracker_overview.model.defaultMeals
 import com.aarevalo.calories.app.ui.theme.CaloriesTheme
 import com.aarevalo.calories.app.ui.theme.LocalSpacing
+import com.aarevalo.calories.core.domain.util.UiEvent
 import java.time.LocalDate
 
 @Composable
 fun TrackerOverviewScreenRoot(
-    viewModel: TrackerOverviewViewModel = hiltViewModel()
+    viewModel: TrackerOverviewViewModel = hiltViewModel(),
+    onNavigateToSearch: () -> Unit
 ) {
-    TrackerOverviewScreen()
+
+    LaunchedEffect(true) {
+        viewModel.event.collect { event ->
+            when(event) {
+                is UiEvent.Success -> onNavigateToSearch()
+                else -> Unit
+            }
+        }
+    }
+
+    TrackerOverviewScreen(
+        onAction = { action ->
+            when(action) {
+                is TrackerOverviewScreenAction.OnNavigateToSearch -> viewModel.onAction(action)
+                else -> Unit
+            }
+        }
+    )
 }
 
 @Composable
-fun TrackerOverviewScreen() {
+fun TrackerOverviewScreen(
+    onAction: (TrackerOverviewScreenAction) -> Unit = {}
+) {
 
     val spacing = LocalSpacing.current
 
@@ -53,6 +75,7 @@ fun TrackerOverviewScreen() {
             ExpandableMeal(
                 meal = meal,
                 onToggleClick = {
+                    onAction(TrackerOverviewScreenAction.OnNavigateToSearch(meal))
                 },
                 content = {
                     Column(

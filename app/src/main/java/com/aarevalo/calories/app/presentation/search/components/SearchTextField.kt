@@ -79,7 +79,7 @@ fun SearchTextField(
                 fontWeight = FontWeight.Light,
                 color = Color.LightGray,
                 modifier = Modifier
-                    .align(Alignment.Center)
+                    .align(Alignment.CenterStart)
                     .padding(start = spacing.spaceMedium)
             )
         }
