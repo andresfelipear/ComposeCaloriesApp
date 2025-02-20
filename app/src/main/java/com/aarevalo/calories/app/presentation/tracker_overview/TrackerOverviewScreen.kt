@@ -13,8 +13,10 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.aarevalo.calories.R
 import com.aarevalo.calories.app.presentation.search.components.AddButton
 import com.aarevalo.calories.app.presentation.tracker_overview.components.DaySelector
 import com.aarevalo.calories.app.presentation.tracker_overview.components.ExpandableMeal
@@ -22,7 +24,6 @@ import com.aarevalo.calories.app.presentation.tracker_overview.components.Nutrie
 import com.aarevalo.calories.app.presentation.tracker_overview.components.TrackedFoodItem
 import com.aarevalo.calories.app.ui.theme.CaloriesTheme
 import com.aarevalo.calories.app.ui.theme.LocalSpacing
-import java.time.LocalDate
 
 @Composable
 fun TrackerOverviewScreenRoot(
@@ -69,48 +70,55 @@ fun TrackerOverviewScreen(
             NutrientsHeader(state = state)
             Spacer(modifier = Modifier.height(spacing.spaceMedium))
             DaySelector(
-                date = LocalDate.now(),
-                onPreviousDayClick = {},
-                onNextDayClick = {},
+                date = state.date,
+                onPreviousDayClick = {
+                    onAction(TrackerOverviewScreenAction.OnPreviousDayClick)
+                },
+                onNextDayClick = {
+                    onAction(TrackerOverviewScreenAction.OnNextDayClick)
+                },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = spacing.spaceMedium)
             )
         }
-        items(state.meals){ meal ->
-            ExpandableMeal(
-                meal = meal,
-                onToggleClick = {
-                    onAction(TrackerOverviewScreenAction.OnToggleMealClick(meal))
-                },
-                content = {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = spacing.spaceSmall)
-                    ) {
-                        val foods = state.trackedFoods.filter {
-                            it.mealType == meal.mealType
-                        }
-                        foods.forEach { food ->
-                            TrackedFoodItem(
-                                trackedFood = food,
-                                onDeleteItem = {}
-                            )
-                           Spacer(modifier = Modifier.height(spacing.spaceMedium))
-                        }
-                        AddButton(
-                            text = "Add",
-                            onClick = {
-                                onAction(
-                                    TrackerOverviewScreenAction.OnNavigateToSearch(meal)
-                                )
-                            },
-                            modifier = Modifier.fillMaxWidth(),
-                        )
-                    }
-                },
-                modifier = Modifier.fillMaxWidth()
+        items(state.meals) { meal ->
+            ExpandableMeal(meal = meal,
+                           onToggleClick = {
+                               onAction(TrackerOverviewScreenAction.OnToggleMealClick(meal))
+                           },
+                           content = {
+                               Column(
+                                   modifier = Modifier
+                                       .fillMaxWidth()
+                                       .padding(horizontal = spacing.spaceSmall)
+                               ) {
+                                   val foods = state.trackedFoods.filter {
+                                       it.mealType == meal.mealType
+                                   }
+                                   foods.forEach { food ->
+                                       TrackedFoodItem(
+                                           trackedFood = food,
+                                           onDeleteItem = {
+                                               onAction(TrackerOverviewScreenAction.OnDeleteTrackedFoodClick(food))
+                                           })
+                                       Spacer(modifier = Modifier.height(spacing.spaceMedium))
+                                   }
+                                   AddButton(
+                                       text = stringResource(
+                                           id = R.string.add_meal,
+                                           meal.name.asString(context = LocalContext.current)
+                                       ),
+                                       onClick = {
+                                           onAction(
+                                               TrackerOverviewScreenAction.OnNavigateToSearch(meal)
+                                           )
+                                       },
+                                       modifier = Modifier.fillMaxWidth(),
+                                   )
+                               }
+                           },
+                           modifier = Modifier.fillMaxWidth()
             )
         }
     }

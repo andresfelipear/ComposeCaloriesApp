@@ -53,6 +53,10 @@ class DefaultTrackerRepository(
         dao.insertTrackedFood(TrackedFoodEntity.fromTrackedFood(food))
     }
 
+    override suspend fun deleteTrackedFood(food: TrackedFood) {
+        dao.deleteTrackedFood(TrackedFoodEntity.fromTrackedFood(food))
+    }
+
     override fun getFoodsForDate(localDate: LocalDate): Flow<List<TrackedFood>> {
         return dao.getFoodsForDate(
             day = localDate.dayOfMonth,

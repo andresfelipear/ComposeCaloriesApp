@@ -2,6 +2,7 @@ package com.aarevalo.calories.app.domain.tracker.di
 
 import com.aarevalo.calories.app.domain.tracker.repository.TrackerRepository
 import com.aarevalo.calories.app.domain.tracker.usecases.CalculateMealNutrientsUseCase
+import com.aarevalo.calories.app.domain.tracker.usecases.DeleteTrackedFoodUseCase
 import com.aarevalo.calories.app.domain.tracker.usecases.GetFoodsForDateUseCase
 import com.aarevalo.calories.app.domain.tracker.usecases.SearchFoodUseCase
 import com.aarevalo.calories.app.domain.tracker.usecases.TrackFoodUseCase
@@ -27,7 +28,8 @@ object TrackerDomainModule {
             searchFoodUseCase = SearchFoodUseCase(trackerRepository),
             trackFoodUseCase = TrackFoodUseCase(trackerRepository),
             getFoodsForDateUseCase = GetFoodsForDateUseCase(trackerRepository),
-            calculateMealNutrientsUseCase = CalculateMealNutrientsUseCase(preferences)
+            calculateMealNutrientsUseCase = CalculateMealNutrientsUseCase(preferences),
+            deleteTrackedFoodUseCase = DeleteTrackedFoodUseCase(trackerRepository)
         )
     }
 }

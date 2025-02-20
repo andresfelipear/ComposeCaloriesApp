@@ -13,7 +13,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.aarevalo.calories.R
 import com.aarevalo.calories.app.ui.theme.CaloriesTheme
 import java.time.LocalDate
 
@@ -34,7 +36,7 @@ fun DaySelector(
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Previous day"
+                contentDescription = stringResource(id = R.string.previous_day)
             )
         }
         Text(
@@ -46,7 +48,7 @@ fun DaySelector(
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                contentDescription = "Next day"
+                contentDescription = stringResource(id = R.string.next_day)
             )
         }
     }

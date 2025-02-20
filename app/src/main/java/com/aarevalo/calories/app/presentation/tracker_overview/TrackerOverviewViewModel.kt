@@ -39,9 +39,6 @@ class TrackerOverviewViewModel @Inject constructor(
     fun onAction(action: TrackerOverviewScreenAction) {
         viewModelScope.launch {
             when(action) {
-                is TrackerOverviewScreenAction.OnNavigateToSearch -> {
-                    _event.send(UiEvent.Success)
-                }
                 is TrackerOverviewScreenAction.OnToggleMealClick -> {
                     _state.update {
                         it.copy(
@@ -53,12 +50,30 @@ class TrackerOverviewViewModel @Inject constructor(
                         )
                     }
                 }
+                is TrackerOverviewScreenAction.OnDeleteTrackedFoodClick -> {
+                    trackerUseCases.deleteTrackedFoodUseCase(action.trackedFood)
+                    refreshFoods()
+                }
+                is TrackerOverviewScreenAction.OnNextDayClick -> {
+                    _state.update {
+                        it.copy(
+                            date = it.date.plusDays(1)
+                        )
+                    }
+                    refreshFoods()
+                }
+                is TrackerOverviewScreenAction.OnPreviousDayClick -> {
+                    _state.update {
+                        it.copy(
+                            date = it.date.minusDays(1)
+                        )
+                    }
+                    refreshFoods()
+                }
                 else -> Unit
             }
         }
     }
-
-
 
     private fun refreshFoods(){
         getFoodsForDateJob?.cancel()
@@ -67,7 +82,6 @@ class TrackerOverviewViewModel @Inject constructor(
             .getFoodsForDateUseCase(state.value.date)
             .onEach { foods ->
                 val nutrientsResult = trackerUseCases.calculateMealNutrientsUseCase(foods)
-                println("Nutrients result: $nutrientsResult")
                 _state.update {
                     it.copy(
                         totalCarbs = nutrientsResult.totalCarbs,
