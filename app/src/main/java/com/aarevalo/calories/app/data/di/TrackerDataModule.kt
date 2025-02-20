@@ -1,5 +1,9 @@
 package com.aarevalo.calories.app.data.di
 
+import android.app.Application
+import androidx.room.Room
+import com.aarevalo.calories.app.data.local.dao.TrackerDao
+import com.aarevalo.calories.app.data.local.database.TrackerDatabase
 import com.aarevalo.calories.app.data.remote.api.OpenFoodApi
 import com.aarevalo.calories.app.data.remote.repository.DefaultTrackerRepository
 import com.aarevalo.calories.app.domain.tracker.repository.TrackerRepository
@@ -54,11 +58,23 @@ object TrackerDataModule {
 
     @Provides
     @Singleton
+    fun provideTrackerDatabase(app: Application): TrackerDatabase {
+        return Room.databaseBuilder(
+            app,
+            TrackerDatabase::class.java,
+            "tracker_db"
+        ).build()
+    }
+
+    @Provides
+    @Singleton
     fun provideTrackerRepository(
-        api: OpenFoodApi
+        api: OpenFoodApi,
+        db: TrackerDatabase
     ): TrackerRepository {
         return DefaultTrackerRepository(
-            api = api
+            api = api,
+            dao = db.trackerDao
         )
     }
 }

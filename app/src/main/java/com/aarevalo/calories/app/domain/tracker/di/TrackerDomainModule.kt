@@ -2,6 +2,7 @@ package com.aarevalo.calories.app.domain.tracker.di
 
 import com.aarevalo.calories.app.domain.tracker.repository.TrackerRepository
 import com.aarevalo.calories.app.domain.tracker.usecases.SearchFoodUseCase
+import com.aarevalo.calories.app.domain.tracker.usecases.TrackFoodUseCase
 import com.aarevalo.calories.app.domain.tracker.usecases.TrackerUseCases
 import dagger.Module
 import dagger.Provides
@@ -19,7 +20,8 @@ object TrackerDomainModule {
         trackerRepository: TrackerRepository
     ) : TrackerUseCases {
         return TrackerUseCases(
-            searchFoodUseCase = SearchFoodUseCase(trackerRepository)
+            searchFoodUseCase = SearchFoodUseCase(trackerRepository),
+            trackFoodUseCase = TrackFoodUseCase(trackerRepository)
         )
     }
 }

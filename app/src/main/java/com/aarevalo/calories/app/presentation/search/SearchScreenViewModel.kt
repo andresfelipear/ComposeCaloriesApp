@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.aarevalo.calories.R
 import com.aarevalo.calories.app.domain.tracker.usecases.TrackerUseCases
 import com.aarevalo.calories.app.presentation.search.model.TrackableFoodUiState
+import com.aarevalo.calories.core.domain.use_case.FilterOutDigits
 import com.aarevalo.calories.core.domain.util.UiEvent
 import com.aarevalo.calories.core.domain.util.UiText
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -18,7 +19,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SearchScreenViewModel @Inject constructor(
-    private val trackerUseCases: TrackerUseCases
+    private val trackerUseCases: TrackerUseCases,
+    private val filterOutDigits: FilterOutDigits
 ) : ViewModel() {
 
     private val _uiEvent = Channel<UiEvent>()
@@ -38,7 +40,7 @@ class SearchScreenViewModel @Inject constructor(
                 is SearchScreenAction.OnSearch -> {
                     executeSearch()
                 }
-                is SearchScreenAction.OnFocusChange -> {
+                is SearchScreenAction.OnSearchFocusChange -> {
                     _state.update {
                         it.copy(
                             isHintVisible = !action.isFocused && state.value.searchQuery.isBlank()
@@ -48,8 +50,45 @@ class SearchScreenViewModel @Inject constructor(
                 is SearchScreenAction.OnNavigateUp -> {
                     _uiEvent.send(UiEvent.NavigateUp)
                 }
+                is SearchScreenAction.OnToggleTrackableFood -> {
+                    _state.update {
+                        it.copy(
+                            trackableFood = state.value.trackableFood.map { food ->
+                                if(food.food == action.food) {
+                                    food.copy(isExpanded = !food.isExpanded)
+                                } else food
+                            }
+                        )
+                    }
+                }
+                is SearchScreenAction.OnAmountForFoodChange -> {
+                    _state.update {
+                        it.copy(
+                            trackableFood = state.value.trackableFood.map { food ->
+                                if(food.food == action.food) {
+                                    food.copy(amount = filterOutDigits(action.amount))
+                                } else food
+                            }
+                        )
+                    }
+                }
+                is SearchScreenAction.OnTrackFoodClick -> {
+                    trackFood(action)
+                }
+
             }
         }
+    }
+
+    private suspend fun trackFood(action: SearchScreenAction.OnTrackFoodClick){
+        val uiState = state.value.trackableFood.find { it.food == action.food }
+        trackerUseCases.trackFoodUseCase(
+            food = uiState?.food ?: return,
+            amount = uiState.amount.toIntOrNull() ?: return,
+            mealType = action.mealType,
+            date = action.date
+        )
+        _uiEvent.send(UiEvent.NavigateUp)
     }
 
     private suspend fun executeSearch() {

@@ -9,5 +9,5 @@ data class Product(
     val imageFrontThumbUrl: String?,
     val nutriments: Nutriments,
     @Json(name = "product_name")
-    val productName: String
+    val productName: String?
 )

@@ -1,12 +1,19 @@
 package com.aarevalo.calories.app.data.remote.repository
 
+import com.aarevalo.calories.app.data.local.dao.TrackerDao
+import com.aarevalo.calories.app.data.local.entity.TrackedFoodEntity
 import com.aarevalo.calories.app.data.remote.api.OpenFoodApi
 import com.aarevalo.calories.app.data.remote.mapper.toTrackableFood
 import com.aarevalo.calories.app.domain.tracker.model.TrackableFood
+import com.aarevalo.calories.app.domain.tracker.model.TrackedFood
 import com.aarevalo.calories.app.domain.tracker.repository.TrackerRepository
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import java.time.LocalDate
 
 class DefaultTrackerRepository(
-    private val api: OpenFoodApi
+    private val api: OpenFoodApi,
+    private val dao: TrackerDao
 ) : TrackerRepository {
     override suspend fun searchFood(
         query: String,
@@ -39,6 +46,20 @@ class DefaultTrackerRepository(
         } catch(e: Exception) {
             e.printStackTrace()
             Result.failure(e)
+        }
+    }
+
+    override suspend fun insertTrackedFood(food: TrackedFood) {
+        dao.insertTrackedFood(TrackedFoodEntity.fromTrackedFood(food))
+    }
+
+    override fun getFoodsForDate(localDate: LocalDate): Flow<List<TrackedFood>> {
+        return dao.getFoodsForDate(
+            day = localDate.dayOfMonth,
+            month = localDate.monthValue,
+            year = localDate.year
+        ).map { entities ->
+            entities.map { it.toTrackedFood() }
         }
     }
 
