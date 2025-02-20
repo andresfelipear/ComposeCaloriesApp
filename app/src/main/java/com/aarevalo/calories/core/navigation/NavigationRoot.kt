@@ -82,15 +82,31 @@ fun NavigationRoot(
             }
             composable<TrackerOverviewScreenRoute>(){
                 TrackerOverviewScreenRoot(
-                    onNavigateToSearch = {
-                        navHostController.navigate(SearchScreenRoute)
+                    onNavigateToSearch = { mealName, dayOfMonth, month, year ->
+                        navHostController.navigate(SearchScreenRoute(
+                            mealName = mealName,
+                            dayOfMonth = dayOfMonth,
+                            month = month,
+                            year = year
+                        ))
                     }
                 )
             }
-            composable<SearchScreenRoute>() {
+            composable<SearchScreenRoute>() { navBackStackEntry ->
+
+                val args = navBackStackEntry.arguments
+                val mealName = args?.getString("mealName") ?: ""
+                val dayOfMonth = args?.getInt("dayOfMonth") ?: 0
+                val month = args?.getInt("month") ?: 0
+                val year = args?.getInt("year") ?: 0
+
                 SearchScreenRoot(
                     onNavigateUp = { navHostController.navigateUp() },
-                    snackBarHostState = snackbarHostState
+                    snackBarHostState = snackbarHostState,
+                    mealName = mealName,
+                    dayOfMonth = dayOfMonth,
+                    month = month,
+                    year = year
                 )
             }
         }

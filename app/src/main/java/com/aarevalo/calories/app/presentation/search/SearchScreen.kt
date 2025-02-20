@@ -39,6 +39,10 @@ fun SearchScreenRoot(
     viewModel: SearchScreenViewModel = hiltViewModel(),
     onNavigateUp: () -> Unit,
     snackBarHostState: SnackbarHostState,
+    mealName: String,
+    dayOfMonth: Int,
+    month: Int,
+    year: Int
 ) {
     val state by viewModel.state.collectAsState()
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -59,12 +63,12 @@ fun SearchScreenRoot(
         }
     }
     SearchScreen(
-        mealName = "Meal Name",
+        mealName = mealName,
         onAction = viewModel::onAction,
         state = state,
-        year = LocalDate.now().year,
-        month = LocalDate.now().monthValue,
-        dayOfMonth = LocalDate.now().dayOfMonth
+        year = year,
+        month = month,
+        dayOfMonth = dayOfMonth
     )
 }
 

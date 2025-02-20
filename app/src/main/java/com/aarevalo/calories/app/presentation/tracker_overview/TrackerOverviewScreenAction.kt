@@ -6,5 +6,5 @@ sealed interface TrackerOverviewScreenAction {
     data object OnNextDayClick : TrackerOverviewScreenAction
     data object OnPreviousDayClick : TrackerOverviewScreenAction
     data class OnToggleMealClick(val meal: Meal) : TrackerOverviewScreenAction
-    data object OnNavigateToSearch : TrackerOverviewScreenAction
+    data class OnNavigateToSearch(val meal: Meal) : TrackerOverviewScreenAction
 }

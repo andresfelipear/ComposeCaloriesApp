@@ -9,41 +9,44 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aarevalo.calories.app.presentation.search.components.AddButton
 import com.aarevalo.calories.app.presentation.tracker_overview.components.DaySelector
 import com.aarevalo.calories.app.presentation.tracker_overview.components.ExpandableMeal
 import com.aarevalo.calories.app.presentation.tracker_overview.components.NutrientsHeader
+import com.aarevalo.calories.app.presentation.tracker_overview.components.TrackedFoodItem
 import com.aarevalo.calories.app.ui.theme.CaloriesTheme
 import com.aarevalo.calories.app.ui.theme.LocalSpacing
-import com.aarevalo.calories.core.domain.util.UiEvent
 import java.time.LocalDate
 
 @Composable
 fun TrackerOverviewScreenRoot(
     viewModel: TrackerOverviewViewModel = hiltViewModel(),
-    onNavigateToSearch: () -> Unit
+    onNavigateToSearch: (String, Int, Int, Int) -> Unit
 ) {
 
     val state by viewModel.state.collectAsState()
+    val context = LocalContext.current
 
-    LaunchedEffect(true) {
-        viewModel.event.collect { event ->
-            when(event) {
-                is UiEvent.Success -> onNavigateToSearch()
-                else -> Unit
-            }
-        }
-    }
 
     TrackerOverviewScreen(
         onAction = { action ->
-            viewModel.onAction(action)
+            when(action) {
+                is TrackerOverviewScreenAction.OnNavigateToSearch -> {
+                    onNavigateToSearch(
+                        action.meal.name.asString(context = context),
+                        state.date.dayOfMonth,
+                        state.date.monthValue,
+                        state.date.year
+                    )
+                }
+                else -> viewModel.onAction(action)
+            }
         },
         state = state
     )
@@ -63,7 +66,7 @@ fun TrackerOverviewScreen(
             .padding(bottom = spacing.spaceMedium)
     ) {
         item {
-            NutrientsHeader()
+            NutrientsHeader(state = state)
             Spacer(modifier = Modifier.height(spacing.spaceMedium))
             DaySelector(
                 date = LocalDate.now(),
@@ -90,13 +93,17 @@ fun TrackerOverviewScreen(
                             it.mealType == meal.mealType
                         }
                         foods.forEach { food ->
+                            TrackedFoodItem(
+                                trackedFood = food,
+                                onDeleteItem = {}
+                            )
                            Spacer(modifier = Modifier.height(spacing.spaceMedium))
                         }
                         AddButton(
                             text = "Add",
                             onClick = {
                                 onAction(
-                                    TrackerOverviewScreenAction.OnNavigateToSearch
+                                    TrackerOverviewScreenAction.OnNavigateToSearch(meal)
                                 )
                             },
                             modifier = Modifier.fillMaxWidth(),

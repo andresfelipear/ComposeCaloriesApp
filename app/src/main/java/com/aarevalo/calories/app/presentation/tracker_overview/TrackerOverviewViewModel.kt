@@ -1,6 +1,5 @@
 package com.aarevalo.calories.app.presentation.tracker_overview
 
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aarevalo.calories.app.domain.tracker.usecases.TrackerUseCases
@@ -11,6 +10,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
@@ -28,6 +28,13 @@ class TrackerOverviewViewModel @Inject constructor(
 
     private val _state = MutableStateFlow(TrackerOverviewScreenState())
     val state = _state.asStateFlow()
+
+    private var getFoodsForDateJob: Job? = null
+
+    init {
+        refreshFoods()
+        preferences.saveShouldShowOnboarding(false)
+    }
 
     fun onAction(action: TrackerOverviewScreenAction) {
         viewModelScope.launch {
@@ -51,16 +58,16 @@ class TrackerOverviewViewModel @Inject constructor(
         }
     }
 
-    init {
-        refreshFoods()
-        preferences.saveShouldShowOnboarding(false)
-    }
+
 
     private fun refreshFoods(){
+        getFoodsForDateJob?.cancel()
+        getFoodsForDateJob =
         trackerUseCases
             .getFoodsForDateUseCase(state.value.date)
             .onEach { foods ->
                 val nutrientsResult = trackerUseCases.calculateMealNutrientsUseCase(foods)
+                println("Nutrients result: $nutrientsResult")
                 _state.update {
                     it.copy(
                         totalCarbs = nutrientsResult.totalCarbs,
@@ -91,6 +98,7 @@ class TrackerOverviewViewModel @Inject constructor(
                     )
                 }
             }
+            .launchIn(viewModelScope)
     }
 
 }

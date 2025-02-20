@@ -19,16 +19,21 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.aarevalo.calories.R
+import com.aarevalo.calories.app.presentation.tracker_overview.TrackerOverviewScreenState
 import com.aarevalo.calories.app.ui.theme.CaloriesTheme
+import com.aarevalo.calories.app.ui.theme.FatColor
 import com.aarevalo.calories.app.ui.theme.LocalSpacing
+import com.aarevalo.calories.app.ui.theme.ProteinColor
+import com.aarevalo.calories.app.ui.theme.tertiaryDark
 
 @Composable
 fun NutrientsHeader(
+    state: TrackerOverviewScreenState,
     modifier: Modifier = Modifier
 ){
     val spacing = LocalSpacing.current
     val animatedCalorieCount = animateIntAsState(
-        targetValue = 2000
+        targetValue = state.totalCalories
     )
 
     Column(
@@ -46,26 +51,26 @@ fun NutrientsHeader(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             NutrientBarInfo(
-                value = 100,
-                goal = 200,
-                name = "Carbs",
-                color = MaterialTheme.colorScheme.tertiary,
+                value = state.totalCarbs,
+                goal = state.carbsGoal,
+                name = stringResource(R.string.carbs),
+                color = tertiaryDark,
                 modifier = Modifier.size(90.dp)
             )
 
             NutrientBarInfo(
-                value = 50,
-                goal = 150,
-                name = "Proteins",
-                color = MaterialTheme.colorScheme.error,
+                value = state.totalProtein,
+                goal = state.proteinGoal,
+                name = stringResource(R.string.protein),
+                color = ProteinColor,
                 modifier = Modifier.size(90.dp)
             )
 
             NutrientBarInfo(
-                value = 300,
-                goal = 500,
-                name = "Fats",
-                color = MaterialTheme.colorScheme.primary,
+                value = state.totalFat,
+                goal = state.fatGoal,
+                name = stringResource(R.string.fat),
+                color = FatColor,
                 modifier = Modifier.size(90.dp)
             )
         }
@@ -76,7 +81,7 @@ fun NutrientsHeader(
         ) {
             UnitDisplay(
                 amount = animatedCalorieCount.value,
-                unit = "kcal",
+                unit = stringResource(R.string.kcal),
                 amountColor = MaterialTheme.colorScheme.onPrimary,
                 amountTextSize = 40.sp,
                 unitColor = MaterialTheme.colorScheme.onPrimary,
@@ -90,8 +95,8 @@ fun NutrientsHeader(
                 )
 
                 UnitDisplay(
-                    amount = 2550,
-                    unit = "kcal",
+                    amount = state.caloriesGoal,
+                    unit = stringResource(R.string.kcal),
                     amountColor = MaterialTheme.colorScheme.onPrimary,
                     amountTextSize = 40.sp,
                     unitColor = MaterialTheme.colorScheme.onPrimary,
@@ -101,16 +106,15 @@ fun NutrientsHeader(
 
         Spacer(modifier = Modifier.height(spacing.spaceSmall))
         NutrientsBar(
-            carbs = 100,
-            proteins = 200,
-            fats = 100,
-            calories = 2000,
-            calorieGoal = 3500,
+            carbs = state.totalCarbs,
+            proteins = state.totalProtein,
+            fats = state.totalFat,
+            calories = state.totalCalories,
+            calorieGoal = state.caloriesGoal,
             modifier = Modifier
                 .fillMaxWidth()
                 .height(30.dp)
         )
-
     }
 }
 
@@ -118,6 +122,8 @@ fun NutrientsHeader(
 @Composable
 fun NutrientsHeaderPreview() {
     CaloriesTheme {
-        NutrientsHeader()
+        NutrientsHeader(
+            state = TrackerOverviewScreenState()
+        )
     }
 }
