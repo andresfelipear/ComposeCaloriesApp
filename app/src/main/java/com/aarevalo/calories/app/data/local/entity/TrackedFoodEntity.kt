@@ -6,7 +6,7 @@ import com.aarevalo.calories.app.domain.tracker.model.MealType
 import com.aarevalo.calories.app.domain.tracker.model.TrackedFood
 import java.time.LocalDate
 
-@Entity
+@Entity(tableName = "tracked_food")
 data class TrackedFoodEntity(
     val name: String,
     val carbs: Int,

@@ -16,7 +16,7 @@ interface TrackerDao {
     @Query(
         """
             SELECT *
-            FROM trackedfoodentity
+            FROM tracked_food
             WHERE dayOfMonth = :day AND month = :month AND year = :year
         """
     )

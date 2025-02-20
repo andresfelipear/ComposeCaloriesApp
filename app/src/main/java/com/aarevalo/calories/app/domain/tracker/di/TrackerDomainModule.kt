@@ -1,9 +1,12 @@
 package com.aarevalo.calories.app.domain.tracker.di
 
 import com.aarevalo.calories.app.domain.tracker.repository.TrackerRepository
+import com.aarevalo.calories.app.domain.tracker.usecases.CalculateMealNutrientsUseCase
+import com.aarevalo.calories.app.domain.tracker.usecases.GetFoodsForDateUseCase
 import com.aarevalo.calories.app.domain.tracker.usecases.SearchFoodUseCase
 import com.aarevalo.calories.app.domain.tracker.usecases.TrackFoodUseCase
 import com.aarevalo.calories.app.domain.tracker.usecases.TrackerUseCases
+import com.aarevalo.calories.core.domain.preferences.Preferences
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -17,11 +20,14 @@ object TrackerDomainModule {
     @ViewModelScoped
     @Provides
     fun provideTrackerUseCase(
-        trackerRepository: TrackerRepository
+        trackerRepository: TrackerRepository,
+        preferences: Preferences
     ) : TrackerUseCases {
         return TrackerUseCases(
             searchFoodUseCase = SearchFoodUseCase(trackerRepository),
-            trackFoodUseCase = TrackFoodUseCase(trackerRepository)
+            trackFoodUseCase = TrackFoodUseCase(trackerRepository),
+            getFoodsForDateUseCase = GetFoodsForDateUseCase(trackerRepository),
+            calculateMealNutrientsUseCase = CalculateMealNutrientsUseCase(preferences)
         )
     }
 }
