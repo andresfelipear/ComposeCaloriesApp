@@ -106,7 +106,7 @@ fun NavigationRoot(
                     mealName = mealName,
                     dayOfMonth = dayOfMonth,
                     month = month,
-                    year = year
+                    year = year,
                 )
             }
         }

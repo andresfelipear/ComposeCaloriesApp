@@ -27,3 +27,4 @@ data class SearchScreenRoute(
     val month: Int,
     val year: Int,
 )
+

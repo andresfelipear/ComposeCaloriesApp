@@ -1,5 +1,6 @@
 package com.aarevalo.calories.app.presentation.search
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -150,6 +151,11 @@ fun SearchScreen(
             state.isSearching -> CircularProgressIndicator()
             state.trackableFood.isEmpty() -> {
                 Text(
+                    modifier = Modifier
+                        .align(Alignment.Center)
+                        .clickable {
+                            onAction(SearchScreenAction.OnDisplayAddCustomItem(isVisible = true))
+                        },
                     text = stringResource(id = R.string.no_results),
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center

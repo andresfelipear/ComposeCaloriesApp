@@ -34,7 +34,7 @@ class SearchScreenViewModel @Inject constructor(
             when(action) {
                 is SearchScreenAction.OnQueryChange -> {
                     _state.update {
-                        it.copy(searchQuery = action.query)
+                        it.copy(searchQuery = action.query, isHintVisible = action.query.isBlank())
                     }
                 }
                 is SearchScreenAction.OnSearch -> {
@@ -47,6 +47,13 @@ class SearchScreenViewModel @Inject constructor(
                         )
                     }
                 }
+                is SearchScreenAction.OnDisplayAddCustomItem -> {
+                    _state.update {
+                        it.copy(
+                            isAddCustomItemVisible = action.isVisible && state.value.searchQuery.isBlank()
+                        )
+                    }
+                }
                 is SearchScreenAction.OnNavigateUp -> {
                     _uiEvent.send(UiEvent.NavigateUp)
                 }
@@ -56,7 +63,7 @@ class SearchScreenViewModel @Inject constructor(
                             trackableFood = state.value.trackableFood.map { food ->
                                 if(food.food == action.food) {
                                     food.copy(isExpanded = !food.isExpanded)
-                                } else food
+                                } else food.copy(isExpanded = false)
                             }
                         )
                     }
@@ -75,7 +82,6 @@ class SearchScreenViewModel @Inject constructor(
                 is SearchScreenAction.OnTrackFoodClick -> {
                     trackFood(action)
                 }
-
             }
         }
     }
@@ -106,8 +112,8 @@ class SearchScreenViewModel @Inject constructor(
                             TrackableFoodUiState(food)
                         },
                         isSearching = false,
+                        isHintVisible = true,
                         searchQuery = "",
-                        isHintVisible = true
                     )
                 }
             }

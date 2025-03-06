@@ -6,6 +6,7 @@ import java.time.LocalDate
 
 sealed interface SearchScreenAction {
     data class OnSearchFocusChange(val isFocused: Boolean) : SearchScreenAction
+    data class OnDisplayAddCustomItem(val isVisible: Boolean) : SearchScreenAction
     data class OnQueryChange(val query: String) : SearchScreenAction
     data class OnToggleTrackableFood(val food: TrackableFood) : SearchScreenAction
     data object OnNavigateUp : SearchScreenAction
