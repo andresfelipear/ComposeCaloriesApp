@@ -35,7 +35,6 @@ import com.aarevalo.calories.app.domain.tracker.model.MealType
 import com.aarevalo.calories.app.presentation.search.components.CustomTrackableFoodItem
 import com.aarevalo.calories.app.presentation.search.components.SearchTextField
 import com.aarevalo.calories.app.presentation.search.components.TrackableFoodItem
-import com.aarevalo.calories.app.presentation.search.model.TrackableFoodUiState
 import com.aarevalo.calories.app.ui.theme.CaloriesTheme
 import com.aarevalo.calories.app.ui.theme.LocalSpacing
 import com.aarevalo.calories.core.domain.util.UiEvent
