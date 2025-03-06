@@ -3,6 +3,7 @@ package com.aarevalo.calories.app.presentation.search
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.aarevalo.calories.R
+import com.aarevalo.calories.app.domain.tracker.model.TrackableFood
 import com.aarevalo.calories.app.domain.tracker.usecases.TrackerUseCases
 import com.aarevalo.calories.app.presentation.search.model.TrackableFoodUiState
 import com.aarevalo.calories.core.domain.use_case.FilterOutDigits
@@ -80,10 +81,59 @@ class SearchScreenViewModel @Inject constructor(
                     }
                 }
                 is SearchScreenAction.OnTrackFoodClick -> {
-                    trackFood(action)
+                    if(state.value.customFoodItem.food.name.isNotBlank()){
+                        trackCustomFood(action)
+                    }
+                    else{
+                        trackFood(action)
+                    }
+                }
+                is SearchScreenAction.OnAttributeChange -> {
+                    _state.update {
+                        it.copy(
+                            customFoodItem = it.customFoodItem.copy(
+                                amount = if(action.attributeName == "amount") filterOutDigits(action.value) else it.customFoodItem.amount,
+                                food = it.customFoodItem.food.copy(
+                                    name = if(action.attributeName == "name") action.value else it.customFoodItem.food.name,
+                                    caloriesPer100g = if(action.attributeName == "calories") action.value.toIntOrNull() else it.customFoodItem.food.caloriesPer100g,
+                                    carbsPer100g = if(action.attributeName == "carbs") action.value.toIntOrNull() else it.customFoodItem.food.carbsPer100g,
+                                    proteinPer100g = if(action.attributeName == "protein") action.value.toIntOrNull() else it.customFoodItem.food.proteinPer100g,
+                                    fatPer100g = if(action.attributeName == "fat") action.value.toIntOrNull() else it.customFoodItem.food.fatPer100g
+                                )
+                            )
+                        )
+                    }
                 }
             }
         }
+    }
+
+    private suspend fun trackCustomFood(action: SearchScreenAction.OnTrackFoodClick){
+        val uiState = state.value.customFoodItem
+        trackerUseCases.trackFoodUseCase(
+            food = uiState.food,
+            amount = uiState.amount.toIntOrNull() ?: return,
+            mealType = action.mealType,
+            date = action.date
+        )
+        _state.update {
+            it.copy(
+                isAddCustomItemVisible = false,
+                customFoodItem = TrackableFoodUiState(
+                    food =
+                    TrackableFood(
+                        name = "",
+                        imageUrl = "",
+                        caloriesPer100g = 0,
+                        carbsPer100g = 0,
+                        proteinPer100g = 0,
+                        fatPer100g = 0
+                    ),
+                    amount = "",
+                    isExpanded = false)
+            )
+        }
+        _uiEvent.send(UiEvent.NavigateUp)
     }
 
     private suspend fun trackFood(action: SearchScreenAction.OnTrackFoodClick){

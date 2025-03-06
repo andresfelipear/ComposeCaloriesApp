@@ -23,13 +23,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.aarevalo.calories.R
 import com.aarevalo.calories.app.domain.tracker.model.MealType
+import com.aarevalo.calories.app.presentation.search.components.CustomTrackableFoodItem
 import com.aarevalo.calories.app.presentation.search.components.SearchTextField
 import com.aarevalo.calories.app.presentation.search.components.TrackableFoodItem
+import com.aarevalo.calories.app.presentation.search.model.TrackableFoodUiState
 import com.aarevalo.calories.app.ui.theme.CaloriesTheme
 import com.aarevalo.calories.app.ui.theme.LocalSpacing
 import com.aarevalo.calories.core.domain.util.UiEvent
@@ -95,50 +101,77 @@ fun SearchScreen(
             style = MaterialTheme.typography.titleLarge
         )
         Spacer(modifier = Modifier.height(spacing.spaceMedium))
-        SearchTextField(
-            text = state.searchQuery,
-            onValueChange = {
-                onAction(SearchScreenAction.OnQueryChange(it))
-            },
-            shouldShowHint = state.isHintVisible,
-            onSearch = {
-                onAction(SearchScreenAction.OnSearch)
-                keyboardController?.hide()
-            },
-            onFocusChanged = {
-                onAction(SearchScreenAction.OnSearchFocusChange(it.isFocused))
-            }
-        )
-        Spacer(modifier = Modifier.height(spacing.spaceMedium))
-        LazyColumn(
-            modifier = Modifier.fillMaxSize()
-        ) {
-            items(state.trackableFood){ food ->
-                TrackableFoodItem(
-                    state = food,
-                    onClick = {
-                        onAction(SearchScreenAction.OnToggleTrackableFood(food.food))
-                    },
-                    onAmountChange = {
-                        onAction(
-                            SearchScreenAction.OnAmountForFoodChange(
-                                food = food.food,
-                                amount = it
-                            )
+
+        if(state.isAddCustomItemVisible){
+            CustomTrackableFoodItem(
+                state = state.customFoodItem,
+                onTrack = {
+                    keyboardController?.hide()
+                    onAction(
+                        SearchScreenAction.OnTrackFoodClick(
+                            food = state.customFoodItem.food,
+                            mealType = MealType.fromString(mealName),
+                            date = LocalDate.of(year, month, dayOfMonth)
                         )
-                    },
-                    onTrack = {
-                        keyboardController?.hide()
-                        onAction(
-                            SearchScreenAction.OnTrackFoodClick(
-                                food = food.food,
-                                mealType = MealType.fromString(mealName),
-                                date = LocalDate.of(year, month, dayOfMonth)
-                            )
+                    )
+                },
+                onAttributeChange = { attributeName, value ->
+                    onAction(
+                        SearchScreenAction.OnAttributeChange(
+                            attributeName = attributeName,
+                            value = value
                         )
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                )
+                    )
+                },
+                modifier = Modifier.fillMaxWidth()
+            )
+
+        } else {
+            SearchTextField(
+                text = state.searchQuery,
+                onValueChange = {
+                    onAction(SearchScreenAction.OnQueryChange(it))
+                },
+                shouldShowHint = state.isHintVisible,
+                onSearch = {
+                    onAction(SearchScreenAction.OnSearch)
+                    keyboardController?.hide()
+                },
+                onFocusChanged = {
+                    onAction(SearchScreenAction.OnSearchFocusChange(it.isFocused))
+                }
+            )
+            Spacer(modifier = Modifier.height(spacing.spaceMedium))
+            LazyColumn(
+                modifier = Modifier.fillMaxSize()
+            ) {
+                items(state.trackableFood){ food ->
+                    TrackableFoodItem(
+                        state = food,
+                        onClick = {
+                            onAction(SearchScreenAction.OnToggleTrackableFood(food.food))
+                        },
+                        onAmountChange = {
+                            onAction(
+                                SearchScreenAction.OnAmountForFoodChange(
+                                    food = food.food,
+                                    amount = it
+                                )
+                            )
+                        },
+                        onTrack = {
+                            keyboardController?.hide()
+                            onAction(
+                                SearchScreenAction.OnTrackFoodClick(
+                                    food = food.food,
+                                    mealType = MealType.fromString(mealName),
+                                    date = LocalDate.of(year, month, dayOfMonth)
+                                )
+                            )
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
         }
     }
@@ -149,6 +182,7 @@ fun SearchScreen(
     ) {
         when {
             state.isSearching -> CircularProgressIndicator()
+            state.isAddCustomItemVisible -> Unit
             state.trackableFood.isEmpty() -> {
                 Text(
                     modifier = Modifier
@@ -156,7 +190,17 @@ fun SearchScreen(
                         .clickable {
                             onAction(SearchScreenAction.OnDisplayAddCustomItem(isVisible = true))
                         },
-                    text = stringResource(id = R.string.no_results),
+                    text = buildAnnotatedString {
+                        append("No results. ")
+                        withStyle(
+                            style = SpanStyle(
+                                textDecoration = TextDecoration.Underline,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        ) {
+                            append("Add Custom Item")
+                        }
+                    },
                     style = MaterialTheme.typography.bodyMedium,
                     textAlign = TextAlign.Center
                 )

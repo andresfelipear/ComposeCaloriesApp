@@ -15,6 +15,10 @@ sealed interface SearchScreenAction {
         val food: TrackableFood,
         val amount: String
     ) : SearchScreenAction
+    data class OnAttributeChange(
+        val attributeName: String,
+        val value: String
+    ) : SearchScreenAction
     data class OnTrackFoodClick(
         val food: TrackableFood,
         val mealType: MealType,
