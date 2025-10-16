@@ -27,24 +27,24 @@ An Android app to log meals, calories, and macronutrients. Search foods via Open
 > Screenshots live under ./logo/screenshots.
 
 ### Onboarding — Enrollment
-Enter your basic information to personalize calorie and macro targets.
 <img src="logo/screenshots/enrollment.png" alt="Onboarding — Enrollment" width="199" height="402" />
+Enter your basic information to personalize calorie and macro targets.
 
 ### Onboarding — Goals
-Choose your goal and macro split to tailor daily targets.
 <img src="logo/screenshots/enrollment2.png" alt="Onboarding — Goals" width="199" height="402" />
+Choose your goal and macro split to tailor daily targets.
 
 ### Tracker Overview
-See daily calories and macros, per-meal breakdowns, and navigate between days.
 <img src="logo/screenshots/main_tab.png" alt="Tracker Overview" width="199" height="402" />
+See daily calories and macros, per-meal breakdowns, and navigate between days.
 
 ### Search — Add Product
-Search OpenFoodFacts, inspect nutrition details, and track exact gram amounts.
 <img src="logo/screenshots/add_product.png" alt="Search — Add Product" width="199" height="402" />
+Search OpenFoodFacts, inspect nutrition details, and track exact gram amounts.
 
 ### Search — Add Custom Item
-Create and track custom foods when search results don’t match your needs.
 <img src="logo/screenshots/add_custom_item.png" alt="Search — Add Custom Item" width="199" height="402" />
+Create and track custom foods when search results don’t match your needs.
 
 ## Technical Architecture
 - **Presentation/UI**: Jetpack Compose (Material 3), ViewModels with StateFlow, Navigation Compose with type-safe routes.
